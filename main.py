@@ -198,10 +198,8 @@ def toggleStream(status):
         time.sleep(2)
         subprocess.call (["sudo", "motion"])
         time.sleep(30)
-        break;
     elif status == "OFF":
         subprocess.call (["sudo", "service", "motion", "stop"])
-        break;
     return
 
 #Author: Thanh Tran
@@ -233,7 +231,7 @@ while True:
         facesDetected = facialDectectionStream()
         if "unknown" in facesDetected and len(facesDetected) == 1 or len(facesDetected) == 0:
             # Send text to notify user of unknown presence
-            sendTextMessage(msg)
+            # sendTextMessage(msg)
             # Send email to notify user of unknown presence
             sendEmail(msg)
             toggleLED(ledred, "ON")
@@ -247,4 +245,5 @@ while True:
         toggleLED(ledred, "OFF")
         toggleLED(ledyellow, "OFF")
         toggleStream("OFF")
+
 
