@@ -13,9 +13,9 @@ import cv2
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-c", "--cascade", required=True,
+ap.add_argument("-c", "--cascade", default="haarcascade_frontalface_default.xml",
 	help = "path to where the face cascade resides")
-ap.add_argument("-e", "--encodings", required=True,
+ap.add_argument("-e", "--encodings", default="encodings.pickle",
 	help="path to serialized db of facial encodings")
 args = vars(ap.parse_args())
 
@@ -30,6 +30,9 @@ print("[INFO] starting video stream...")
 #vs = VideoStream(src=0).start()
 vs = VideoStream(usePiCamera=True).start()
 time.sleep(2.0)
+
+### global
+names2 = []
 
 # start the FPS counter
 fps = FPS().start()
@@ -86,9 +89,11 @@ while True:
 			# of votes (note: in the event of an unlikely tie Python
 			# will select first entry in the dictionary)
 			name = max(counts, key=counts.get)
-		
+
 		# update the list of names
 		names.append(name)
+        names2.append(name)
+
 
 	# loop over the recognized faces
 	for ((top, right, bottom, left), name) in zip(boxes, names):
@@ -102,6 +107,12 @@ while True:
 	# display the image to our screen
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
+
+    # test to see what names are being set as
+    # import threading
+    #
+    # timer = threading.timer(5.0, print(names))
+    # timer.start()
 
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):

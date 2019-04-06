@@ -14,9 +14,9 @@ import os
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--dataset", required=True,
+ap.add_argument("-i", "--dataset", default="photoDatabase",
 	help="path to input directory of faces + images")
-ap.add_argument("-e", "--encodings", required=True,
+ap.add_argument("-e", "--encodings", default="encodings.pickle",
 	help="path to serialized db of facial encodings")
 ap.add_argument("-d", "--detection-method", type=str, default="hog",
 	help="face detection model to use: either `hog` or `cnn`")
