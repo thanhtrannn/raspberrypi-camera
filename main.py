@@ -18,7 +18,8 @@ from account import password, account_sid, auth_token
 
 pir = MotionSensor(4)
 led = LED(18)
-ledred = LED(21)
+ledyellow = LED(21)
+ledred= LED(16)
 
 #Author: from pyimagesearch.com - pyimagesearch.com/2018/06/25/raspberry-pi-face-recognition/
 #Function Name: facialDetectionStream
@@ -168,7 +169,7 @@ def sendEmail():
     
     port = 465    
     sender_email = "tmantmang@gmail.com"
-    weburl = ""
+    weburl = "http://192.168.1.14"
     msg = "Check who it is: " + weburl
     Subject = "Unknown Person At The Door"
     message = """From: %s\nTo: %s\nSubject: %s\n\n%s""" % (sender_email, sender_email, Subject, msg )
@@ -184,19 +185,23 @@ def sendEmail():
 while True:
     if pir.motion_detected:
         led.on()
-        ledred.on()
         facesDetected = facialDectectionStream()
         if "unknown" in facesDetected and len(facesDetected) == 1 or len(facesDetected) == 0:
             sendTextMessage()
             # Send email to notify user of unknown presence
             sendEmail()
+            ledred.on()
+        else:
+            ledyellow.on()
         subprocess.call (["sudo", "service", "motion", "start"])
         time.sleep(2)
         subprocess.call (["sudo", "motion"])
         # pause for stream
-        time.sleep(120)
+        time.sleep(30)
     else:
         facesDetected = []
         led.off()
+        ledred.off()
+        ledyellow.off()
         subprocess.call (["sudo", "service", "motion", "stop"])
 
