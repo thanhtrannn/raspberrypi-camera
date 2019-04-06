@@ -14,12 +14,9 @@ from gpiozero import MotionSensor, LED
 from signal import pause
 import time
 import subprocess
+from twilio.rest import Client
+import smtplib, ssl
 from account import password, account_sid, auth_token
-
-pir = MotionSensor(4)
-led = LED(18)
-ledyellow = LED(21)
-ledred= LED(16)
 
 #Author: from pyimagesearch.com - pyimagesearch.com/2018/06/25/raspberry-pi-face-recognition/
 #Function Name: facialDetectionStream
@@ -151,57 +148,103 @@ def facialDectectionStream():
 
     return(faceDetected)
 
-def sendTextMessage():
-    # Send text message to phone   
-    # from twilio.rest import Client
-    # client = Client(account_sid, auth_token)
-    # message = client.messages.create(body='testing',from_='+12897780212',to='+19059215160')
-    # print(message.sid)
+#Author: David Nguyen
+#Function Name: sendTextMessage
+#Parameters: msg - message for text and email
+#Date: April 1, 2019
+#Returns: Message sent to phone number
+def sendTextMessage(msg):
+    # account_side and auth_token taken and set in account.py
+    client = Client(account_sid, auth_token)
+    twilio_number = "+12897780212"
+    number_toSend = "+19059215160"
+    try:
+        print("Message sent successfully")
+        message = client.messages.create(body = msg,from_ = twilio_number,to = number_toSend)
+    except:
+        print("Message failed")
+        # print(message.sid)
     return
-#
-#
-#
-#
-#
 
-def sendEmail():
-    import smtplib, ssl
-    
-    port = 465    
+#Author: Thanh Tran
+#Function Name: sendEmail
+#Parameters: msg - message for text and email
+#Date: April 1, 2019
+#Returns: Email sent to email
+def sendEmail(msg):
+    port = 465
     sender_email = "tmantmang@gmail.com"
-    weburl = "http://192.168.1.14"
-    msg = "Check who it is: " + weburl
     Subject = "Unknown Person At The Door"
     message = """From: %s\nTo: %s\nSubject: %s\n\n%s""" % (sender_email, sender_email, Subject, msg )
-    
     context = ssl.create_default_context()
-    # User gmail server to send email to self
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-            server.login(sender_email, password)
-            server.sendmail(sender_email, sender_email, message)
-            
+    try:
+        # Use gmail server to send email to self
+        with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+                # password taken and set in account.py
+                server.login(sender_email, password)
+                server.sendmail(sender_email, sender_email, message)
+    except:
+        print("Email failed")       
     return
 
-while True:
-    if pir.motion_detected:
-        led.on()
-        facesDetected = facialDectectionStream()
-        if "unknown" in facesDetected and len(facesDetected) == 1 or len(facesDetected) == 0:
-            sendTextMessage()
-            # Send email to notify user of unknown presence
-            sendEmail()
-            ledred.on()
-        else:
-            ledyellow.on()
+#Author: David Nguyen
+#Function Name: toggleStream
+#Parameters: status - weather to turn on and off camera for streaming purposes
+#Date: April 1, 2019
+#Returns: signal to toggle camera
+def toggleStream(status):
+    if status == "ON":
         subprocess.call (["sudo", "service", "motion", "start"])
         time.sleep(2)
         subprocess.call (["sudo", "motion"])
-        # pause for stream
         time.sleep(30)
-    else:
-        facesDetected = []
-        led.off()
-        ledred.off()
-        ledyellow.off()
+        break;
+    elif status == "OFF":
         subprocess.call (["sudo", "service", "motion", "stop"])
+        break;
+    return
+
+#Author: Thanh Tran
+#Function Name: toggleLED
+#Parameters: led - led gpio object, status - weather to turn on and off LED
+#Date: April 1, 2019
+#Returns: signal to toggle LED
+def toggleLED(led, status):
+    if status == "ON":
+        return led.on()
+    elif status == "OFF":
+        return led.off()
+
+#Variables
+weburl = "http://192.168.1.14" #site of hosted site
+msg = "Check who's at your door: " + weburl
+
+#GPIO variables
+pir = MotionSensor(4)
+led = LED(18)
+ledyellow = LED(21)
+ledred= LED(16)
+
+#Main Program STARTS
+#script to keep running and make motion detector active
+while True:
+    if pir.motion_detected:
+        toggleLED(led, "ON")
+        facesDetected = facialDectectionStream()
+        if "unknown" in facesDetected and len(facesDetected) == 1 or len(facesDetected) == 0:
+            # Send text to notify user of unknown presence
+            sendTextMessage(msg)
+            # Send email to notify user of unknown presence
+            sendEmail(msg)
+            toggleLED(ledred, "ON")
+        else:
+            toggleLED(ledyellow, "ON")
+        toggleStream("ON")
+    else:
+        # Reset facesDetected list as it is used to determine
+        facesDetected = []
+        toggleLED(led, "OFF")
+        toggleLED(ledred, "OFF")
+        toggleLED(ledyellow, "OFF")
+        toggleStream("OFF")
 
