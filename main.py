@@ -14,11 +14,11 @@ from gpiozero import MotionSensor, LED
 from signal import pause
 import time
 import subprocess
-from account import password
+from account import password, account_sid, auth_token
 
 pir = MotionSensor(4)
 led = LED(18)
-
+ledred = LED(21)
 
 #Author: from pyimagesearch.com - pyimagesearch.com/2018/06/25/raspberry-pi-face-recognition/
 #Function Name: facialDetectionStream
@@ -153,8 +153,6 @@ def facialDectectionStream():
 def sendTextMessage():
     # Send text message to phone   
     # from twilio.rest import Client
-    # account_sid = "AC48a1aba77e046b220ab0865987e2e5c0"
-    # auth_token = "6cff70609506724bbf6f8f5e242ba63b"
     # client = Client(account_sid, auth_token)
     # message = client.messages.create(body='testing',from_='+12897780212',to='+19059215160')
     # print(message.sid)
@@ -186,6 +184,7 @@ def sendEmail():
 while True:
     if pir.motion_detected:
         led.on()
+        ledred.on()
         facesDetected = facialDectectionStream()
         if "unknown" in facesDetected and len(facesDetected) == 1 or len(facesDetected) == 0:
             sendTextMessage()
