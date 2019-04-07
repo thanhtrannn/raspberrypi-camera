@@ -59,7 +59,7 @@ def takePhotos():
 # Returns: none
 # Function: goes through database folder of images and creates "encodings.pickle"
 #           this 128-d face embeddings for each face
-#           this file is essentially the
+#           this file is essentially the facial recognition database file
 
 
 def buildDatabase():
