@@ -148,7 +148,7 @@ def facialDectectionStream():
 
     return(faceDetected)
 
-#Author: David Nguyen
+#Author: Thanh Tran
 #Function Name: sendTextMessage
 #Parameters: msg - message for text and email
 #Date: April 1, 2019
