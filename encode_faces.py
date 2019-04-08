@@ -34,23 +34,26 @@ args = vars(ap.parse_args())
 def takePhotos():
     camera = picamera.PiCamera()
 
-    #variable to hold current timestamp
-    #format: month/day/year/hour/minute/second
+    # variable to hold current timestamp
+    # format: month/day/year/hour/minute/second
     timestamp = datetime.datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
 
+    # create the directory using the name from argument line
+    os.mkdir("/home/pi/PycharmProjects/raspberrypi-camera/photoDatabase/" + args["name"])
+
     try:
-        sleep(3) #warm up camera
+        sleep(3) # warm up camera
     finally:
         x = 5
-        camera.start_preview() #for testing purposes, view camera stream
+        camera.start_preview() # for testing purposes, view camera stream
         # take 5 photos, 2 seconds apart
         while x > 0:
             sleep(2)
-            #take picture and append the timestamp
+            # take picture and append the timestamp
             camera.capture("/home/pi/PycharmProjects/raspberrypi-camera/photoDatabase/" + args["name"] + "/" + timestamp + ".jpg")
             x -= 1
-        camera.stop_preview() #for testing purposes, close camera stream
-    camera.close()
+        camera.stop_preview() # for testing purposes, close camera stream
+        camera.close()
 
 # Author: Adrian https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/
 # Function Name: buildDatabase (originally encode_faces)
@@ -59,7 +62,7 @@ def takePhotos():
 # Returns: none
 # Function: goes through database folder of images and creates "encodings.pickle"
 #           this 128-d face embeddings for each face
-#           this file is essentially the facial recognition database file
+#           this file is essentially the
 
 
 def buildDatabase():
