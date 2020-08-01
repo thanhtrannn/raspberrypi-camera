@@ -1,5 +1,5 @@
 # Doorbell Surveillance with Facial Recognition
-Doorbell with multiple features that utilizes facial recognition. Raspberry Pi with breadboard, camera and motion sensor module, facial recognition algorithms and library in Python, and Apache to host website to show live feed.
+A scalable IOT (Internet of things) project that has potential to include features that utilizes facial recognition and Raspberry Pi.
 
 ## Prerequisites
 ### Hardware
@@ -26,7 +26,7 @@ Python 3.6, PHP, HTML5, CSS3, JavaScript, jQuery, Bootstrap
 * gpiozero - interface to GPIO devices (Motion sensor, LED)
 
 ## Code
-### Main.py
+### main.py
 * **Facial Recognition:** Refer to the guide [here](https://www.pyimagesearch.com/2018/06/25/raspberry-pi-face-recognition/)
 * Use Twilio API to send text message and email of the live camera feed to the owner, when unidentified person is at the door
 * Live stream of camera to website
@@ -37,7 +37,7 @@ Python 3.6, PHP, HTML5, CSS3, JavaScript, jQuery, Bootstrap
 * Takes 5 pictures over 20 seconds and store in directory()
 * Insert or updates (if parameters already exist) the database with new sets of photos
 
-### Index.php
+### html/index.php
 Site to view camera feed and contain functions for interaction:
 
 * Text-to-speech through and input form submission (WIP)
